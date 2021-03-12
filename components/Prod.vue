@@ -3,100 +3,95 @@
     <a-form :form = "form">
 
       <div class="form-group">
-        <label for="nombre">Nombre</label>
+        <label>{{label1}}</label>
         <a-input
           type="text"
-          placeholder="Ej: Soda"
-          v-model="nombre"
-          class="form-control"/>
+          :placeholder="ph1"
+          v-model="nombre"/>
       </div>
 
       <div class="form-group">
-        <label for="precio">Precio</label>
+        <label>{{label2}}</label>
         <a-input
           type="real"
-          placeholder="Ej: 1.25"
-          v-model="precio"
-          class="form-control"/>
+          :placeholder="ph2"
+          v-model="precio"/>
       </div>
 
       <div class="form-group">
-        <label for="descripcion">Descripción</label>
+        <label>{{label3}}</label>
         <a-input
           type="text"
-          placeholder="Ej: marca, sabor"
-          v-model="descripcion"
-          class="form-control"/>
+          :placeholder="ph3"
+          v-model="descripcion"/>
       </div>
 
-      <button type="button" @click="onSubmit" class="btn btn-dark">
+      <button type="button" @click="onSubmit()" class="btn btn-dark">
         Crear
       </button>
 
     </a-form>
 
-
-    <a-divider/>
+      <a-divider/>
 
 
     <a-list :grid="{ gutter: 16, xs: 1, sm: 2, md: 3, lg: 3, xl: 4, xxl: 4 }">
 
-        <a-list-item v-for="(entry, j) in List" :key="j">
+        <a-list-item  v-for="(entry,index) in List" :key="index">
             <a-card hoverable style="width: 300px">
                <img slot="cover" alt="example" src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"/>
-
                <template slot="actions" class="ant-card-actions">
-                 <a-icon key="edit" type="edit" @click="showModal(j)"/>
-                 <a-icon key="delete" type="delete" @click="deletear(j)" />
+                 <a-icon key="edit" type="edit" @click="showModal(index)"/>
+                 <a-icon key="delete" type="delete" @click="deletear(index)" />
                </template>
 
-               <a-modal v-model="visible" title="Editar"  @ok="handleOk(j)" >
 
-                 <a-form :form = "form">
+                <a-descriptions :title="entry.id + entry.nombre">
+               <a-descriptions-item :label="label2">
+                 {{entry.precio}}
+               </a-descriptions-item>
+               <a-descriptions-item :label="label3">
+                  {{entry.descripcion}}
+               </a-descriptions-item>
+             </a-descriptions>
 
-                   <div class="form-group">
-                     <label for="nombrea">Nombre</label>
-                     <a-input
-                       type="text"
-                       :placeholder="entry.nombre"
-                       v-model="nombrea"
-                       class="form-control"/>
-                   </div>
+           </a-card>
+           <a-modal v-model="visible" :item="selectedItem" title="Editar"  @ok="handleOk(selectedItem)" >
 
-                   <div class="form-group">
-                     <label for="precioa">Precio</label>
-                     <a-input
-                       type="real"
-                       :placeholder="entry.precio"
-                       v-model="precioa"
-                       class="form-control"/>
-                   </div>
+             <a-form>
 
-                   <div class="form-group">
-                     <label for="descripciona">Descripción</label>
-                     <a-input
-                       type="text"
-                       :placeholder="entry.descripcion"
-                       v-model="descripciona"
-                       class="form-control"/>
-                   </div>
+               <div class="form-group">
+                 <label>{{label1}}</label>
+                 <a-input
+                   type="text"
+                   :placeholder="ph1"
+                   v-model="nombrea"
+                   class="form-control"/>
+               </div>
 
-                 </a-form>
+               <div class="form-group">
+                 <label>{{label2}}</label>
+                 <a-input
+                   type="real"
+                   :placeholder="ph2"
+                   v-model="precioa"
+                   class="form-control"/>
+               </div>
 
-                </a-modal>
+               <div class="form-group">
+                 <label>{{label3}}</label>
+                 <a-input
+                   type="text"
+                   :placeholder="ph3"
+                   v-model="descripciona"
+                   class="form-control"/>
+               </div>
+             </a-form>
 
-               <p>Nombre : {{entry.nombre}}</p>
-               <p>Descripción : {{entry.descripcion}}</p>
-               <p>Precio : {{entry.precio}}</p>
-
-             </a-card>
+            </a-modal>
         </a-list-item>
-
       </a-list>
-
   </div>
-
-
 
 </template>
 
@@ -106,7 +101,16 @@
   export default {
 
     name: "Productos",
-    data: () => ({ nombre: "", precio: "", descripcion: "", visible: false, allelements: []}),
+    props: {
+      label1: { type: String },
+      label2: { type: String },
+      label3: {type: String },
+      ph1: { type: String },
+      ph2: { type: String },
+      ph3: {type: String },
+
+    },
+    data: () => ({ida: -1, id: 1, nombre: "", nombrea: "", precio: "", precioa: "", descripcion: "", descripciona: "", visible: false, selectedItem: undefined, allelements: []}),
 
     computed: {
       List: function() {
@@ -114,33 +118,34 @@
 
       },
     },
+
     methods: {
 
-      onSubmit() {
 
-        this.allelements.push({ nombre: this.nombre, precio: this.precio, descripcion: this.descripcion });
+      onSubmit() {
+        this.allelements.push({id: this.id++, nombre: this.nombre, precio: this.precio, descripcion: this.descripcion });
         this.clearForm();
         this.$notification.open({
          message: 'Item creado!',
          description:
            'Puede editar o eliminar su item.'});
 
-
       },
-      deletear(j) {
-        this.allelements.splice(j,1);
+      deletear(id) {
+        this.allelements.splice(id,1);
       },
-      showModal() {
+      showModal(id) {
+        this.selectedItem = id;
+        this.nombrea = this.allelements[id].nombre;
+        this.precioa = this.allelements[id].precio;
+        this.descripciona = this.allelements[id].descripcion ;
         this.visible = true;
 
       },
-      handleOk(j) {
-        this.nuevo = { nombre: this.nombrea, precio: this.precioa, descripcion: this.descripciona};
-        this.allelements.push(this.nuevo);
-        this.allelements.splice(j,1);
-        this.nombrea = "";
-        this.precioa = "";
-        this.descripciona = "";
+      handleOk(id) {
+        this.allelements[id].nombre = this.nombrea;
+        this.allelements[id].precio = this.precioa;
+        this.allelements[id].descripcion = this.descripciona;
         this.visible = false;
 
       },

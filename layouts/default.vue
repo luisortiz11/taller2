@@ -8,17 +8,19 @@
         :default-selected-keys="['2']"
         :style="{ lineHeight: '64px' }"
       >
-        <a-menu-item key="1">
-          <NuxtLink to="/Productos"> Productos </NuxtLink>
+      <a-menu-item key="1">
+        <NuxtLink to="/Home"> Home </NuxtLink>
         </a-menu-item>
         <a-menu-item key="2">
-          <NuxtLink to="/Vacantes"> Vacantes </NuxtLink>
+          <NuxtLink to="/Productos"> Productos </NuxtLink>
         </a-menu-item>
         <a-menu-item key="3">
-          <NuxtLink to="/Login"> Login </NuxtLink>
+          <NuxtLink to="/Vacantes"> Vacantes </NuxtLink>
         </a-menu-item>
+
       </a-menu>
     </a-layout-header>
+    <a-divider/>
     <a-layout-content :style="{ padding: '0 50px', marginTop: '64px'  }">
 
         <nuxt />
