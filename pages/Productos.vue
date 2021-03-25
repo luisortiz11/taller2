@@ -8,6 +8,7 @@
     ph1 = "Ej. Soda"
     ph2 = "Ej. 1.25"
     ph3 = "Ej. Sabor Fresa"/>
+
   </div>
 </template>
 
